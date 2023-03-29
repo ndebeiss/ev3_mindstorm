@@ -1,9 +1,9 @@
-def turn_around(turn_step, nb_steps, drive_base, infrared_sensor):
-    print("turning"+ str(nb_steps))
-    returned = []
+def turn_around(turn_step, nb_steps, drive_base, infrared_sensor, index_of_actual_direction, actual_position, direction_list, maze):
+    print("turning "+ str(nb_steps) + " step(s)")
+    distances = []
     angle = 0
     distance = infrared_sensor.distance()
-    returned.append(distance)
+    distances.append(distance)
     print('distance found at angle : ' + str(angle) + ' : ' + str(distance))
     for i in range(0, nb_steps):
         incr_angle = 360/turn_step
@@ -11,8 +11,9 @@ def turn_around(turn_step, nb_steps, drive_base, infrared_sensor):
         drive_base.turn(incr_angle)
         distance = infrared_sensor.distance()
         print('distance found at angle : ' + str(angle) + ' : ' + str(distance))
-        returned.append(distance)
-    return returned
+        distances.append(distance)
+    mark_maze_obstacle(index_of_actual_direction, distances, actual_position, direction_list, maze)
+    return distances
 
 
 def index_of_direction(direction_list, direction):
@@ -39,3 +40,47 @@ def mark_maze_obstacle(index_of_actual_direction, distances, actual_position, di
             print("marking cell : " + str((x_studied, y_studied)) + " as obstacle")
             actual_cell.obstacle = 1
         index_of_direction_distance = (index_of_direction_distance + 1) % 8
+    print_maze(maze)
+
+
+def print_maze(maze):
+    print(" ", end='')
+    for x in range(0, get_max_x(maze)):
+        print("-", end='')
+    print("")
+    for y in range(0, get_max_y(maze)):
+        print("|", end='')
+        for x in range(0, get_max_x(maze)):
+            if maze[x][y].chemin == 1:
+                print('C', end='')
+            elif maze[x][y].destination == 1:
+                print('D', end='')
+            elif maze[x][y].obstacle == 1:
+                print('X', end='')
+            elif maze[x][y].best_path == 1:
+                print('B', end='')
+            elif maze[x][y].visited == 1:
+                print('V', end='')
+            elif maze[x][y].studied == 1:
+                print('S', end='')
+            else:
+                print(' ', end='')
+        print("|")
+    print(" ", end='')
+    for x in range(0, get_max_x(maze)):
+        print("-", end='')
+    print("")
+
+
+def clear_maze(maze):
+    for x in range(0, get_max_x(maze)):
+        for y in range(0, get_max_y(maze)):
+            maze[x][y].clear()
+
+
+def get_max_x(maze):
+    return len(maze) - 1
+
+
+def get_max_y(maze):
+    return len(maze[len(maze) - 1])
