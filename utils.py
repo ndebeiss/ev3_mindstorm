@@ -5,14 +5,15 @@ def turn_around(turn_step, nb_steps, drive_base, infrared_sensor, index_of_actua
     distance = infrared_sensor.distance()
     distances.append(distance)
     print('distance found at angle : ' + str(angle) + ' : ' + str(distance))
-    for i in range(0, nb_steps):
-        incr_angle = 360/turn_step
+    incr = 1 if nb_steps >= 0 else -1
+    for i in range(0, nb_steps, incr):
+        incr_angle = incr * 360/turn_step
         angle += incr_angle
         drive_base.turn(incr_angle)
         distance = infrared_sensor.distance()
         print('distance found at angle : ' + str(angle) + ' : ' + str(distance))
         distances.append(distance)
-    mark_maze_obstacle(index_of_actual_direction, distances, actual_position, direction_list, maze)
+    mark_maze_obstacle(index_of_actual_direction, distances, actual_position, direction_list, maze, incr)
     return distances
 
 
@@ -28,7 +29,7 @@ def get_nb_steps_to_direction(direction_list, best_direction, index_of_actual_di
         nb_steps += turn_steps
     return nb_steps
 
-def mark_maze_obstacle(index_of_actual_direction, distances, actual_position, direction_list, maze):
+def mark_maze_obstacle(index_of_actual_direction, distances, actual_position, direction_list, maze, incr):
     index_of_direction_distance = index_of_actual_direction
     for distance in distances:
         if distance < 40:
@@ -39,7 +40,7 @@ def mark_maze_obstacle(index_of_actual_direction, distances, actual_position, di
             actual_cell = maze[x_studied][y_studied]
             print("marking cell : " + str((x_studied, y_studied)) + " as obstacle")
             actual_cell.obstacle = 1
-        index_of_direction_distance = (index_of_direction_distance + 1) % 8
+        index_of_direction_distance = (index_of_direction_distance + incr) % 8
     print_maze(maze)
 
 
