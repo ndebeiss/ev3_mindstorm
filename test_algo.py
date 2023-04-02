@@ -57,3 +57,7 @@ def test_astar_two_wall():
     print(str(best_path))
     print("longueur du chemin : " + str(len(best_path)))
 
+
+
+if __name__ == "__main__":
+    test_astar_two_wall()

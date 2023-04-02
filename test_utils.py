@@ -27,7 +27,7 @@ def test_mark_maze_obstacle():
     actual_position = (5, 5)
     maze[actual_position[0]][actual_position[1]].visited = 1
     utils.print_maze(maze)
-    utils.mark_maze_obstacle(4, [100,0,100,100,100,100,100,0], actual_position, DIRECTION_LIST, maze)
+    utils.mark_maze_obstacle(4, [100,0,100,100,100,100,100,0], actual_position, DIRECTION_LIST, maze, 1)
     assert maze[0][0].obstacle == 0
     assert maze[5][5].obstacle == 0
     assert maze[6][6].obstacle == 0
@@ -39,7 +39,7 @@ def test_mark_maze_front_obstacle():
     actual_position = (8, 8)
     maze[actual_position[0]][actual_position[1]].visited = 1
     utils.print_maze(maze)
-    utils.mark_maze_obstacle(0, [0,100,100,100,100,100,100,100], actual_position, DIRECTION_LIST, maze)
+    utils.mark_maze_obstacle(0, [0,100,100,100,100,100,100,100], actual_position, DIRECTION_LIST, maze, 1)
     utils.print_maze(maze)
     assert maze[8][8].obstacle == 0
     assert maze[9][8].obstacle == 0
@@ -55,7 +55,7 @@ def test_mark_maze_all_obstacle():
     actual_position = (10, 10)
     maze[actual_position[0]][actual_position[1]].visited = 1
     utils.print_maze(maze)
-    utils.mark_maze_obstacle(4, [0,0,0,0,0,0,0,0], actual_position, DIRECTION_LIST, maze)
+    utils.mark_maze_obstacle(4, [0,0,0,0,0,0,0,0], actual_position, DIRECTION_LIST, maze, 1)
     assert maze[0][0].obstacle == 0
     assert maze[10][10].obstacle == 0
     assert maze[9][9].obstacle == 1

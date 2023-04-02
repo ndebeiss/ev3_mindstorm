@@ -2,6 +2,7 @@ import math
 
 from Node import Node
 from utils import print_maze, clear_maze
+import heapq
 
 
 def heuristic(position, dest):
@@ -20,10 +21,13 @@ def reconstruct_path(current_node, maze):
 
 
 def astar(maze, start, end, direction_list):
-    """Returns a list of tuples as a path from the given start to the given end in the given maze"""
-
-    print("clearing maze")
-    clear_maze(maze)
+    """
+    Returns a list of tuples as a path from the given start to the given end in the given maze
+    :param maze:
+    :param start:
+    :param end:
+    :return:
+    """
 
     # Create start and end node
     start_node = Node(None, start)
@@ -33,26 +37,18 @@ def astar(maze, start, end, direction_list):
 
     # Initialize both open and closed list
     open_list = []
-    closed_list = []
+    closed_list = set()
 
-    # Add the start node
-    open_list.append(start_node)
+    # Heapify the open_list and Add the start node
+    heapq.heapify(open_list) 
+    heapq.heappush(open_list, start_node)
 
     # Loop until you find the end
     while len(open_list) > 0:
 
         # Get the current node
-        current_node = open_list[0]
-        current_index = 0
-        for index, item in enumerate(open_list):
-            if item.f < current_node.f:
-                current_node = item
-                current_index = index
-
-        maze[current_node.position[0]][current_node.position[1]].visited = 1
-        # Pop current off open list, add to closed list
-        open_list.pop(current_index)
-        closed_list.append(current_node)
+        current_node = heapq.heappop(open_list)
+        closed_list.add(current_node)
 
         # Found the goal
         if current_node == end_node:
@@ -83,7 +79,7 @@ def astar(maze, start, end, direction_list):
         for child in children:
 
             # Child is on the closed list
-            if len([closed_child for closed_child in closed_list if closed_child == child]) > 0:
+            if child in closed_list:
                 continue
 
             # Create the f, g, and h values
@@ -91,14 +87,16 @@ def astar(maze, start, end, direction_list):
             child.h = heuristic(child.position, end_node.position)
             child.f = child.g + child.h
 
-            # Child is already in the open list
-            if len([open_node for open_node in open_list if child == open_node and child.g > open_node.g]) > 0:
+            # Child is already in the open list with a better g
+            if len([open_node for open_node in open_list if child.position == open_node.position and child.g > open_node.g]) > 0:
                 continue
 
             # Add the child to the open list
-            open_list.append(child)
+            heapq.heappush(open_list, child)
             maze[child.position[0]][child.position[1]].studied = 1
-        print_maze(maze)
+        #print_maze(maze)
+    print("Couldn't get a path to destination")
+    return None
     
 
     
